@@ -20,7 +20,7 @@ export function createSocketServer(httpServer) {
     pingInterval:  25_000,
     pingTimeout:   20_000,
     // Only WebSocket transport in production for lower latency
-    transports:    env.isProd ? ["websocket"] : ["websocket", "polling"],
+    transports:    env.isProd ? ["websocket","polling"] : ["websocket", "polling"],
     // Limit event payload size
     maxHttpBufferSize: 1e5, // 100 KB
   });
