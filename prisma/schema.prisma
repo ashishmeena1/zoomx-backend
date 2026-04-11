@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  // pgbouncer=true URL — used at runtime (pooled connections)
+  url       = env("DATABASE_URL")
+  // Direct URL — used by Prisma for migrations (bypasses pgbouncer)
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  googleId  String   @unique
+  email     String   @unique
+  name      String
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  rooms     Room[]   @relation("RoomAdmin")
+
+  @@index([googleId])
+  @@index([email])
+}
+
+model Room {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  name      String
+  adminId   String
+  admin     User     @relation("RoomAdmin", fields: [adminId], references: [id], onDelete: Cascade)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([code])
+  @@index([adminId])
+  @@index([active])
+}
